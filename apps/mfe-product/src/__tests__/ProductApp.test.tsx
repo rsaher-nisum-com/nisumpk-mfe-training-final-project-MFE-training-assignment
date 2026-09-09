@@ -21,7 +21,6 @@ function renderApp() {
 describe('Product MFE App', () => {
   beforeEach(() => {
     store.dispatch(clearCart());
-    window.localStorage.clear();
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => sampleProducts,

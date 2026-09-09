@@ -1,0 +1,78 @@
+name: CD
+
+# Best-effort deployment: publishes the gateway + all three MFEs (static,
+# federated bundles) to GitHub Pages under independent subpaths. There is no
+# automated backend deployment here - see README "Deployment" for why (it
+# needs a hosting account/secrets this repo doesn't have) and how it would
+# be wired up (Render/Fly/Railway + a repo variable for API_URL).
+#
+# Required repo configuration (Settings -> Secrets and variables -> Actions):
+#   vars.API_URL - base URL of your deployed backend (e.g. https://api.example.com)
+# Also enable Settings -> Pages -> Source: "GitHub Actions" (or the gh-pages
+# branch this workflow pushes to) for the deployed site to go live.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      API_URL: ${{ vars.API_URL }}
+      BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build gateway
+        run: npm run build --workspace=gateway
+        env:
+          PUBLIC_PATH: ${{ env.BASE_URL }}/gateway/
+          PRODUCT_MFE_URL: ${{ env.BASE_URL }}/mfe-product
+          CART_MFE_URL: ${{ env.BASE_URL }}/mfe-cart
+          ORDERS_MFE_URL: ${{ env.BASE_URL }}/mfe-orders
+
+      - name: Build product MFE
+        run: npm run build --workspace=mfe-product
+        env:
+          PUBLIC_PATH: ${{ env.BASE_URL }}/mfe-product/
+          ENABLE_RECOMMENDATIONS: 'true'
+
+      - name: Build cart MFE
+        run: npm run build --workspace=mfe-cart
+        env:
+          PUBLIC_PATH: ${{ env.BASE_URL }}/mfe-cart/
+
+      - name: Build orders MFE
+        run: npm run build --workspace=mfe-orders
+        env:
+          PUBLIC_PATH: ${{ env.BASE_URL }}/mfe-orders/
+
+      - name: Assemble Pages output
+        run: |
+          mkdir -p site
+          cp -r apps/gateway/dist site/gateway
+          cp -r apps/mfe-product/dist site/mfe-product
+          cp -r apps/mfe-cart/dist site/mfe-cart
+          cp -r apps/mfe-orders/dist site/mfe-orders
+          echo '<meta http-equiv="refresh" content="0; url=./gateway/" />' > site/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site

@@ -1,3 +1,7 @@
+// Ambient global augmentation only; a real `import` of a .d.ts-only file
+// breaks Vite's module resolution in tests (it isn't a runtime module).
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="./global.d.ts" />
 import type { NisumEventMap, NisumEventName } from '@nisum-mfe/shared-types';
 
 const PREFIX = 'nisum:';

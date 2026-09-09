@@ -5,14 +5,13 @@ import { Provider } from 'react-redux';
 import { store } from '@nisum-mfe/state';
 import App from '../App';
 
-vi.mock('mfeProduct/ProductApp', () => ({
-  default: () => <div>Product Catalog Page</div>,
-}));
-vi.mock('mfeCart/CartApp', () => ({
-  default: () => <div>Cart Page</div>,
-}));
-vi.mock('mfeOrders/OrdersApp', () => ({
-  default: () => <div>Orders Page</div>,
+// Mock the local `../remotes` module (not the bare `mfeProduct/ProductApp`
+// style specifiers) - those only resolve at runtime via the webpack Module
+// Federation runtime and can't be resolved by Vite's test bundler at all.
+vi.mock('../remotes', () => ({
+  ProductApp: () => <div>Product Catalog Page</div>,
+  CartApp: () => <div>Cart Page</div>,
+  OrdersApp: () => <div>Orders Page</div>,
 }));
 
 function renderApp() {

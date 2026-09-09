@@ -18,7 +18,6 @@ describe('Cart MFE App', () => {
   beforeEach(() => {
     store.dispatch(clearCart());
     store.dispatch(logout());
-    window.localStorage.clear();
   });
 
   afterEach(() => {

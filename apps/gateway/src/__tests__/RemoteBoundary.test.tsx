@@ -12,13 +12,16 @@ describe('RemoteBoundary', () => {
     vi.restoreAllMocks();
   });
 
-  it('shows a loading state while the remote chunk is pending', () => {
+  it('shows a loading state while the remote chunk is pending', async () => {
     render(
       <RemoteBoundary name="Test Remote">
         <WorkingRemote />
       </RemoteBoundary>,
     );
     expect(screen.getByText(/loading test remote/i)).toBeInTheDocument();
+    // Let the already-pending import settle within `act` so it doesn't bleed
+    // an unwrapped state update into whichever test runs next.
+    await screen.findByText('Loaded content');
   });
 
   it('renders the remote once it resolves', async () => {

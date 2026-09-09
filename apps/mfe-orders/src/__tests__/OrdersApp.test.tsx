@@ -17,7 +17,6 @@ function renderApp() {
 describe('Orders MFE App', () => {
   beforeEach(() => {
     store.dispatch(logout());
-    window.localStorage.clear();
   });
 
   afterEach(() => {
