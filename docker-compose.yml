@@ -1,0 +1,67 @@
+name: nisum-mfe-final-project
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - '4000:4000'
+    environment:
+      PORT: 4000
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
+
+  mfe-product:
+    build:
+      context: .
+      dockerfile: apps/mfe-product/Dockerfile
+      args:
+        PUBLIC_PATH: http://localhost:3001/
+        API_URL: http://localhost:4000
+        ENABLE_RECOMMENDATIONS: 'true'
+    ports:
+      - '3001:80'
+    depends_on:
+      - api
+
+  mfe-cart:
+    build:
+      context: .
+      dockerfile: apps/mfe-cart/Dockerfile
+      args:
+        PUBLIC_PATH: http://localhost:3002/
+        API_URL: http://localhost:4000
+    ports:
+      - '3002:80'
+    depends_on:
+      - api
+
+  mfe-orders:
+    build:
+      context: .
+      dockerfile: apps/mfe-orders/Dockerfile
+      args:
+        PUBLIC_PATH: http://localhost:3003/
+        API_URL: http://localhost:4000
+    ports:
+      - '3003:80'
+    depends_on:
+      - api
+
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+      args:
+        PUBLIC_PATH: http://localhost:3000/
+        API_URL: http://localhost:4000
+        PRODUCT_MFE_URL: http://localhost:3001
+        CART_MFE_URL: http://localhost:3002
+        ORDERS_MFE_URL: http://localhost:3003
+    ports:
+      - '3000:80'
+    depends_on:
+      - api
+      - mfe-product
+      - mfe-cart
+      - mfe-orders

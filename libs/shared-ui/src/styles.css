@@ -1,0 +1,168 @@
+:root {
+  --nisum-color-bg: #f7f8fa;
+  --nisum-color-surface: #ffffff;
+  --nisum-color-border: #e2e5ea;
+  --nisum-color-text: #1a1d23;
+  --nisum-color-muted: #6b7280;
+  --nisum-color-primary: #4f46e5;
+  --nisum-color-primary-hover: #4338ca;
+  --nisum-color-danger: #dc2626;
+  --nisum-color-success: #16a34a;
+  --nisum-color-warning: #d97706;
+  --nisum-radius: 8px;
+  --nisum-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--nisum-color-bg);
+  color: var(--nisum-color-text);
+}
+
+.nisum-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--nisum-radius);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+.nisum-btn:active {
+  transform: scale(0.98);
+}
+.nisum-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.nisum-btn--primary {
+  background: var(--nisum-color-primary);
+  color: #fff;
+}
+.nisum-btn--primary:hover:not(:disabled) {
+  background: var(--nisum-color-primary-hover);
+}
+.nisum-btn--secondary {
+  background: var(--nisum-color-surface);
+  color: var(--nisum-color-text);
+  border-color: var(--nisum-color-border);
+}
+.nisum-btn--secondary:hover:not(:disabled) {
+  background: var(--nisum-color-bg);
+}
+.nisum-btn--danger {
+  background: var(--nisum-color-danger);
+  color: #fff;
+}
+
+.nisum-card {
+  background: var(--nisum-color-surface);
+  border: 1px solid var(--nisum-color-border);
+  border-radius: var(--nisum-radius);
+  box-shadow: var(--nisum-shadow);
+  padding: 16px;
+}
+
+.nisum-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--nisum-color-primary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nisum-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--nisum-color-border);
+  border-top-color: var(--nisum-color-primary);
+  border-radius: 50%;
+  animation: nisum-spin 0.7s linear infinite;
+}
+@keyframes nisum-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.nisum-loading-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 0;
+  color: var(--nisum-color-muted);
+}
+
+.nisum-error-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--nisum-color-muted);
+  border: 1px dashed var(--nisum-color-border);
+  border-radius: var(--nisum-radius);
+}
+.nisum-error-panel__title {
+  color: var(--nisum-color-text);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.nisum-toast-stack {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 320px;
+}
+.nisum-toast {
+  padding: 12px 14px;
+  border-radius: var(--nisum-radius);
+  box-shadow: var(--nisum-shadow);
+  color: #fff;
+  font-size: 14px;
+  animation: nisum-toast-in 0.15s ease-out;
+}
+@keyframes nisum-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.nisum-toast--info {
+  background: #334155;
+}
+.nisum-toast--success {
+  background: var(--nisum-color-success);
+}
+.nisum-toast--error {
+  background: var(--nisum-color-danger);
+}
+.nisum-toast--warning {
+  background: var(--nisum-color-warning);
+}
